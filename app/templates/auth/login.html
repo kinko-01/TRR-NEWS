@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Login — TRR NEWS{% endblock %}{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<section class="auth-shell" aria-labelledby="auth-title"><div class="authbox">
+  <a class="auth-brand" href="{{ url_for('main.home') }}" aria-label="TRR NEWS home"><span>TRR</span> <b>NEWS</b></a>
+  <h1 id="auth-title">Welcome back</h1><p class="auth-subtitle">Sign in to your account.</p>
+  <form method="post" class="auth-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Email<input name="email" type="email" autocomplete="email" required placeholder="Email"></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Password"></label>
+    <button class="btn auth-submit" type="submit"><span aria-hidden="true">↪</span> Login</button>
+  </form>
+  <div class="auth-divider"><span>or</span></div>
+  <a class="auth-secondary" href="{{ url_for('auth.signup') }}">＋ &nbsp; Create Account</a>
+  <p class="auth-switch">New to TRR NEWS? <a href="{{ url_for('auth.signup') }}">Sign up</a></p>
+</div></section>
+{% endblock %}

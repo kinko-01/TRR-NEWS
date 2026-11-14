@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0c">
+<title>{% block title %}TRR NEWS{% endblock %}</title>
+<meta name="description" content="{% block description %}TRR NEWS — independent digital news, stories, analysis and features.{% endblock %}">
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/trr-news-logo.svg') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/trr-news-logo.svg') }}">
+<link rel="canonical" href="{{ site_url }}{{ request.path }}">
+<meta property="og:site_name" content="TRR NEWS">
+<meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+<meta property="og:description" content="{{ self.description() }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url }}{{ request.path }}">
+<link rel="alternate" type="application/rss+xml" title="TRR NEWS RSS" href="{{ url_for('main.rss_feed') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="site-header">
+  <div class="topline"><div class="container topflex"><span>Independent Digital News</span><span>Truth • Context • Stories</span></div></div>
+  <div class="container brandrow">
+    <a class="brand" href="{{ url_for('main.home') }}" aria-label="TRR NEWS home"><img class="brand-logo" src="{{ url_for('static', filename='images/trr-news-logo.svg') }}" alt="TRR NEWS"></a>
+    <form class="search" action="{{ url_for('main.search') }}" method="get"><label class="sr-only" for="site-search">Search news</label><input id="site-search" name="q" maxlength="120" placeholder="Search news..." value="{{ request.args.get('q','') }}"><button type="submit" aria-label="Search">⌕</button></form>
+    <div class="account">
+      {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('auth.logout') }}" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="linkbutton" type="submit">Logout</button></form>
+        {% if current_user.role in ('admin','editor','journalist') %}<a class="pill" href="{{ url_for('admin.dashboard') }}">Newsroom</a>{% endif %}
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a><a class="pill" href="{{ url_for('auth.signup') }}">Sign up</a>
+      {% endif %}
+    </div>
+  </div>
+  <nav class="nav" aria-label="Primary navigation"><div class="container navinner">
+    <a href="{{ url_for('main.home') }}">Home</a>
+    {% for c in nav_categories %}<a href="{{ url_for('main.category', slug=c.slug) }}">{{ c.name }}</a>{% endfor %}
+  </div></nav>
+</header>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}<div class="container alerts" aria-live="polite">{% for category,message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+{% endwith %}
+<main>{% block content %}{% endblock %}</main>
+<footer class="footer"><div class="container footergrid">
+  <div><a href="{{ url_for('main.home') }}" aria-label="TRR NEWS home"><img class="brand-logo small" src="{{ url_for('static', filename='images/trr-news-logo.svg') }}" alt="TRR NEWS"></a><p>Independent digital news, reporting and analysis.</p></div>
+  <div><h4>Explore</h4><a href="{{ url_for('main.about') }}">About</a><a href="{{ url_for('main.search') }}">Search</a><a href="{{ url_for('main.rss_feed') }}">RSS Feed</a></div>
+  <div><h4>Connect</h4><span>Follow TRR NEWS on your preferred social platform.</span></div>
+</div><div class="copyright">© {{ current_year }} TRR NEWS. All Rights Reserved.</div></footer>
+</body>
+</html>
