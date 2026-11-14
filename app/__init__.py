@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime, timezone
+from sqlalchemy import text
 from pathlib import Path
 from flask import Flask, jsonify, render_template
 from flask_wtf.csrf import CSRFError
@@ -19,7 +20,18 @@ except ImportError:
 
 
 def create_app(config_object=None):
-    app = Flask(__name__, instance_relative_config=True)
+    if os.getenv("VERCEL"):
+        app = Flask (
+            __name__,
+            instance_path="/tmp/trr-news-instance",
+            instance_relative_config=True,
+        )
+        
+    else: 
+        app = Flask(
+        __name__,
+        instance_relative_config=True
+    )
     config_object = config_object or os.getenv("FLASK_CONFIG", "development").lower()
     config_map = {"development": DevelopmentConfig, "testing": TestingConfig, "production": ProductionConfig}
     if isinstance(config_object, str):

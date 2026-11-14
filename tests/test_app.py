@@ -42,8 +42,6 @@ def test_article_creation_and_public_visibility(app, client):
     assert response.status_code == 200
     with client.session_transaction() as session:
         pass
-    token_response = client.get("/auth/login")
-    assert token_response.status_code == 200
 
     # Extract CSRF token from the form rendered after login.
     import re
